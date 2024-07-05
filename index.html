@@ -80,23 +80,23 @@
         // reticle.add(new THREE.AxesHelper(1));
       }
 
-      function onSelect() {        
-        if (reticle.visible) {
-          // cone added at the point of a hit test
-          // replace the next lines to add your own object in space
-          const geometry = new THREE.CylinderBufferGeometry(0, 0.05, 0.2, 32);
-          const material = new THREE.MeshPhongMaterial({
-            color: 0xffffff * Math.random()
-          });
-          const mesh = new THREE.Mesh(geometry, material);
-          
-          // set the position of the cylinder based on where the reticle is          
-          mesh.position.setFromMatrixPosition(reticle.matrix);
-          mesh.quaternion.setFromRotationMatrix(reticle.matrix);
+      function onSelect() {
+  if (reticle.visible) {
+    
+    const geometry = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xffffff * Math.random()
+    });
+    const mesh = new THREE.Mesh(geometry, material);
 
-          scene.add(mesh); 
-        }
-      }
+    
+    mesh.position.setFromMatrixPosition(reticle.matrix);
+    mesh.quaternion.setFromRotationMatrix(reticle.matrix);
+
+    scene.add(mesh);
+  }
+}
+
 
       function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
