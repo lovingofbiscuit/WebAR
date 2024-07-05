@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Hit Testing</title>
+    <title>Hit Testing - Only Reticle</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link type="text/css" rel="stylesheet" href="style.css">
@@ -10,16 +10,15 @@
 
   <body>
     <script type="module">
-      // In this example you should be able to place a cone on top of a surface (like a floor or table)
-      // On your phone, you have to tap the screen to place a phone where the circle shows up
-      // On the desktop emulator you have to "right-click" to simulate a tap
+      // This example renders a "reticle" or round circle to indicate where surfaces are
+      // On your phone just point it towards a surface (like a table or the floor) and you should see a round circle appear 
+      // where the hit test intersects the floor
       
       import { ARButton } from "https://unpkg.com/three@0.126.0/examples/jsm/webxr/ARButton.js";
 
       let container;
       let camera, scene, renderer;
       let reticle;
-      let controller;
 
       init();
       animate();
@@ -46,12 +45,8 @@
         var light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
         light.position.set(0.5, 1, 0.25);
         scene.add(light);
-        
-        controller = renderer.xr.getController(0);
-        controller.addEventListener('select', onSelect);
-        scene.add(controller);
 
-        addReticleToScene();
+        addReticleToScene(); // circle visual aid
 
         const button = ARButton.createButton(renderer, {
           requiredFeatures: ["hit-test"] // notice a new required feature
@@ -80,23 +75,6 @@
         // reticle.add(new THREE.AxesHelper(1));
       }
 
-      function onSelect() {        
-        if (reticle.visible) {
-          // cone added at the point of a hit test
-          // replace the next lines to add your own object in space
-          const geometry = new THREE.CylinderBufferGeometry(0, 0.05, 0.2, 32);
-          const material = new THREE.MeshPhongMaterial({
-            color: 0xffffff * Math.random()
-          });
-          const mesh = new THREE.Mesh(geometry, material);
-          
-          // set the position of the cylinder based on where the reticle is          
-          mesh.position.setFromMatrixPosition(reticle.matrix);
-          mesh.quaternion.setFromRotationMatrix(reticle.matrix);
-
-          scene.add(mesh); 
-        }
-      }
 
       function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -122,7 +100,7 @@
       // This function gets called just once to initialize a hitTestSource
       // The purpose of this function is to get a) a hit test source and b) a reference space
       async function initializeHitTestSource() {
-        const session = renderer.xr.getSession(); // XRSession
+        const session = renderer.xr.getSession();
         
         // Reference spaces express relationships between an origin and the world.
 
