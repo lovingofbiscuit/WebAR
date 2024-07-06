@@ -125,7 +125,7 @@
                         const hit = hitTestResults[0];
                         const pose = hit.getPose(localSpace);
 
-                        reticle.visible = true;
+                        reticle.visible = false;
                         reticle.matrix.fromArray(pose.transform.matrix);
                     } else {
                         reticle.visible = false;
