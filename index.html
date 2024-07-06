@@ -66,25 +66,42 @@
         }
 
         function onSelect() {
-            if (reticle.visible && !modelLoaded) {
-                gltfLoader.load('ElectricScooter.gltf', function (gltf) { 
-                    const model = gltf.scene;
+    if (reticle.visible && !modelLoaded) {
+        gltfLoader.load('ElectricScooter.gltf', function (gltf) { 
+            const model = gltf.scene;
 
-                    // задаем позицию модели на основе положения ретикулы
-                    model.position.setFromMatrixPosition(reticle.matrix);
-                    model.quaternion.setFromRotationMatrix(reticle.matrix);
-                    model.scale.set(0.01, 0.01, 0.01);
+            // задаем позицию модели на основе положения ретикулы
+            model.position.setFromMatrixPosition(reticle.matrix);
+            model.quaternion.setFromRotationMatrix(reticle.matrix);
+            model.scale.set(0.01, 0.01, 0.01);
 
-                    scene.add(model);
-                    modelLoaded = true;
-                    scene.remove(reticle);
-                    reticle.geometry.dispose();
-                    reticle.material.dispose();
-                }, undefined, function (error) {
-                    console.error('An error happened while loading the model', error);
-                });
+            // Добавляем анимацию вращения модели
+            model.rotation.y = Math.PI / 2; // Начальный угол вращения
+
+            // Функция для анимации вращения
+            function animateModel() {
+                model.rotation.y += 0.01; // Изменение угла вращения
             }
-        }
+
+            // Добавляем модель в сцену
+            scene.add(model);
+            modelLoaded = true;
+            scene.remove(reticle);
+            reticle.geometry.dispose();
+            reticle.material.dispose();
+
+            // Добавляем функцию анимации в цикл анимации
+            renderer.setAnimationLoop(function () {
+                animateModel();
+                renderer.render(scene, camera);
+            });
+
+        }, undefined, function (error) {
+            console.error('An error happened while loading the model', error);
+        });
+    }
+}
+
 
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -92,9 +109,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        function animate() {
-            renderer.setAnimationLoop(render);
-        }
+        
 
         let hitTestSource = null;
         let localSpace = null;
