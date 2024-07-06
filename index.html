@@ -18,7 +18,7 @@
         let controller;
         let modelLoaded = false; // флаг для отслеживания добавления модели
         let gltfLoader = new THREE.GLTFLoader(); // инициализируем загрузчик
-        
+
         init();
         animate();
 
@@ -52,49 +52,9 @@
             document.body.appendChild(button);
             renderer.domElement.style.display = "none";
 
-            renderer.domElement.addEventListener('pointerdown', onPointerDown);
-            renderer.domElement.addEventListener('pointermove', onPointerMove);
-            renderer.domElement.addEventListener('pointerup', onPointerUp);
-
             window.addEventListener('resize', onWindowResize, false);
         }
 
-
-        let isPointerDown = false;
-        let previousPointerPosition = { x: 0, y: 0 };
-
-        function onPointerDown(event) {
-            isPointerDown = true;
-            previousPointerPosition = {
-            x: event.clientX,
-            y: event.clientY
-            };
-        }
-
-        function onPointerMove(event) {
-        if (isPointerDown) {
-        const deltaMove = {
-            x: event.clientX - previousPointerPosition.x,
-            y: event.clientY - previousPointerPosition.y
-        };
-
-        // Вращение модели на основе движения мыши или пальца
-        model.rotation.y += deltaMove.x * 0.01;
-        model.rotation.x += deltaMove.y * 0.01;
-
-        previousPointerPosition = {
-            x: event.clientX,
-            y: event.clientY
-        };
-    }
-}
-
-function onPointerUp(event) {
-    isPointerDown = false;
-}
-
-
-        
         function addReticleToScene() {
             const geometry = new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2);
             const material = new THREE.MeshBasicMaterial();
@@ -104,27 +64,27 @@ function onPointerUp(event) {
             reticle.visible = false;
             scene.add(reticle);
         }
-        let model = null;
+
         function onSelect() {
-    if (reticle.visible && !modelLoaded) {
-        gltfLoader.load('ElectricScooter.gltf', function (gltf) {
-            model = gltf.scene;
+            if (reticle.visible && !modelLoaded) {
+                gltfLoader.load('ElectricScooter.gltf', function (gltf) { 
+                    const model = gltf.scene;
 
-            // Задаем позицию модели на основе положения ретикулы
-            model.position.setFromMatrixPosition(reticle.matrix);
-            model.quaternion.setFromRotationMatrix(reticle.matrix);
-            model.scale.set(0.01, 0.01, 0.01);
+                    // задаем позицию модели на основе положения ретикулы
+                    model.position.setFromMatrixPosition(reticle.matrix);
+                    model.quaternion.setFromRotationMatrix(reticle.matrix);
+                    model.scale.set(0.01, 0.01, 0.01);
 
-            scene.add(model);
-            modelLoaded = true;
-            scene.remove(reticle);
-            reticle.geometry.dispose();
-            reticle.material.dispose();
-        }, undefined, function (error) {
-            console.error('An error happened while loading the model', error);
-        });
-    }
-}
+                    scene.add(model);
+                    modelLoaded = true;
+                    scene.remove(reticle);
+                    reticle.geometry.dispose();
+                    reticle.material.dispose();
+                }, undefined, function (error) {
+                    console.error('An error happened while loading the model', error);
+                });
+            }
+        }
 
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
