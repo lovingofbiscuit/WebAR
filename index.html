@@ -77,11 +77,12 @@
 
                     scene.add(model);
                     modelLoaded = true;
-                    reticle.visible = false;
+                    
                 }, undefined, function (error) {
                     console.error('An error happened while loading the model', error);
                 });
             }
+            reticle.visible = false;
         }
 
         function onWindowResize() {
@@ -125,7 +126,7 @@
                         const hit = hitTestResults[0];
                         const pose = hit.getPose(localSpace);
 
-                        reticle.visible = false;
+                        reticle.visible = true;
                         reticle.matrix.fromArray(pose.transform.matrix);
                     } else {
                         reticle.visible = false;
