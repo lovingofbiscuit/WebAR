@@ -77,6 +77,7 @@
 
                     scene.add(model);
                     modelLoaded = true;
+                    reticle.visible = false;
                 }, undefined, function (error) {
                     console.error('An error happened while loading the model', error);
                 });
