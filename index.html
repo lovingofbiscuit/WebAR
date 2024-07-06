@@ -75,8 +75,8 @@
       }
 
       function onSelect() {
-        if (reticle.visible && !modelLoaded) { // загружаем модель только если ее еще нет
-          gltfLoader.load('path/to/your/model.gltf', function (gltf) { // замените 'path/to/your/model.gltf' на путь к вашей модели
+        if (reticle.visible && !modelLoaded) {
+          gltfLoader.load('ElectricScooter.gltf', function (gltf) {
             const model = gltf.scene;
 
             // задаем позицию модели на основе положения ретикулы
@@ -85,6 +85,8 @@
 
             scene.add(model);
             modelLoaded = true; // устанавливаем флаг в true после добавления модели
+          }, undefined, function (error) {
+            console.error(error);
           });
         }
       }
