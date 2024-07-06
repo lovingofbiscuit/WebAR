@@ -23,37 +23,45 @@
         animate();
 
         function init() {
-            container = document.createElement('div');
-            document.body.appendChild(container);
+    const container = document.createElement('div');
+    document.body.appendChild(container);
 
-            scene = new THREE.Scene();
+    scene = new THREE.Scene();
 
-            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 40);
 
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.xr.enabled = true;
-            container.appendChild(renderer.domElement);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.xr.enabled = true; // включаем поддержку WebXR
+    container.appendChild(renderer.domElement);
 
-            var light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-            light.position.set(0.5, 1, 0.25);
-            scene.add(light);
+    var light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+    light.position.set(0.5, 1, 0.25);
+    scene.add(light);
 
-            controller = renderer.xr.getController(0);
-            controller.addEventListener('select', onSelect);
-            scene.add(controller);
-
-            addReticleToScene();
-
-            const button = ARButton.createButton(renderer, {
-                requiredFeatures: ["hit-test"]
+    // Добавляем кнопку для запуска AR
+    const arButton = document.createElement('button');
+    arButton.textContent = 'Start AR';
+    arButton.style.position = 'absolute';
+    arButton.style.top = '20px';
+    arButton.style.left = '20px';
+    arButton.addEventListener('click', function () {
+        // Запускаем AR сессию
+        if (renderer.xr.isPresenting) {
+            renderer.xr.getSession().end();
+        } else {
+            renderer.xr.getSession({ immersive: true }).then((session) => {
+                renderer.xr.setSession(session);
+                arButton.style.display = 'none'; // Прячем кнопку после запуска AR
             });
-            document.body.appendChild(button);
-            renderer.domElement.style.display = "none";
-
-            window.addEventListener('resize', onWindowResize, false);
         }
+    });
+    document.body.appendChild(arButton);
+
+    window.addEventListener('resize', onWindowResize, false);
+}
+
 
         function addReticleToScene() {
             const geometry = new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2);
