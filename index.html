@@ -77,12 +77,13 @@
 
                     scene.add(model);
                     modelLoaded = true;
-                    
+                    scene.remove(reticle);
+                    reticle.geometry.dispose();
+                    reticle.material.dispose();
                 }, undefined, function (error) {
                     console.error('An error happened while loading the model', error);
                 });
             }
-            reticle.visible = false;
         }
 
         function onWindowResize() {
