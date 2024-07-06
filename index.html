@@ -66,16 +66,17 @@
         }
 
         function onSelect() {
-            if (reticle.visible && !modelLoaded) { // загружаем модель только если ее еще нет
-                gltfLoader.load('ElectricScooter.gltf', function (gltf) { // замените 'model.gltf' на имя вашей модели
+            if (reticle.visible && !modelLoaded) {
+                gltfLoader.load('ElectricScooter.gltf', function (gltf) { 
                     const model = gltf.scene;
 
                     // задаем позицию модели на основе положения ретикулы
                     model.position.setFromMatrixPosition(reticle.matrix);
                     model.quaternion.setFromRotationMatrix(reticle.matrix);
+                    model.scale.set(0.1, 0.1, 0.1);
 
                     scene.add(model);
-                    modelLoaded = true; // устанавливаем флаг в true после добавления модели
+                    modelLoaded = true;
                 }, undefined, function (error) {
                     console.error('An error happened while loading the model', error);
                 });
