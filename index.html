@@ -5,27 +5,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link type="text/css" rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/examples/js/loaders/GLTFLoader.js" crossorigin="anonymous"></script>
-  </head>
-
-  <body>
     <script type="module">
-      import { ARButton } from "https://unpkg.com/three@0.126.0/examples/jsm/webxr/ARButton.js";
-      import { GLTFLoader } from "https://unpkg.com/three@0.126.0/examples/jsm/loaders/GLTFLoader.js";
+      import * as THREE from 'https://unpkg.com/three@0.126.0/build/three.module.js';
+      import { ARButton } from 'https://unpkg.com/three@0.126.0/examples/jsm/webxr/ARButton.js';
+      import { GLTFLoader } from 'https://unpkg.com/three@0.126.0/examples/jsm/loaders/GLTFLoader.js';
 
       let container;
       let camera, scene, renderer;
       let reticle;
       let controller;
-      let modelLoaded = false; // флаг для отслеживания добавления модели
-      let gltfLoader = new GLTFLoader(); // инициализируем загрузчик
+      let modelLoaded = false; // Флаг для отслеживания добавления модели
+      let gltfLoader = new GLTFLoader(); // Инициализируем загрузчик
 
       init();
       animate();
 
       function init() {
-        container = document.createElement("div");
+        container = document.createElement('div');
         document.body.appendChild(container);
 
         scene = new THREE.Scene();
@@ -54,12 +50,12 @@
         addReticleToScene();
 
         const button = ARButton.createButton(renderer, {
-          requiredFeatures: ["hit-test"]
+          requiredFeatures: ['hit-test']
         });
         document.body.appendChild(button);
-        renderer.domElement.style.display = "none";
+        renderer.domElement.style.display = 'none';
 
-        window.addEventListener("resize", onWindowResize, false);
+        window.addEventListener('resize', onWindowResize, false);
       }
 
       function addReticleToScene() {
@@ -75,16 +71,16 @@
       }
 
       function onSelect() {
-        if (reticle.visible && !modelLoaded) { // загружаем модель только если ее еще нет
-          gltfLoader.load('ElectricScooter.gltf', function (gltf) { // замените 'model.gltf' на имя вашей модели
+        if (reticle.visible && !modelLoaded) { // Загружаем модель только если ее еще нет
+          gltfLoader.load('model.gltf', function (gltf) { // Замените 'model.gltf' на имя вашей модели
             const model = gltf.scene;
 
-            // задаем позицию модели на основе положения ретикулы
+            // Задаем позицию модели на основе положения ретикулы
             model.position.setFromMatrixPosition(reticle.matrix);
             model.quaternion.setFromRotationMatrix(reticle.matrix);
 
             scene.add(model);
-            modelLoaded = true; // устанавливаем флаг в true после добавления модели
+            modelLoaded = true; // Устанавливаем флаг в true после добавления модели
           }, undefined, function (error) {
             console.error('An error happened while loading the model', error);
           });
@@ -108,13 +104,13 @@
 
       async function initializeHitTestSource() {
         const session = renderer.xr.getSession();
-        const viewerSpace = await session.requestReferenceSpace("viewer");
+        const viewerSpace = await session.requestReferenceSpace('viewer');
         hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
-        localSpace = await session.requestReferenceSpace("local");
+        localSpace = await session.requestReferenceSpace('local');
 
         hitTestSourceInitialized = true;
 
-        session.addEventListener("end", () => {
+        session.addEventListener('end', () => {
           hitTestSourceInitialized = false;
           hitTestSource = null;
         });
@@ -144,5 +140,8 @@
         }
       }
     </script>
+  </head>
+
+  <body>
   </body>
 </html>
