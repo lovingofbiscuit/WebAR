@@ -73,7 +73,7 @@
                     // задаем позицию модели на основе положения ретикулы
                     model.position.setFromMatrixPosition(reticle.matrix);
                     model.quaternion.setFromRotationMatrix(reticle.matrix);
-                    model.scale.set(0.1, 0.1, 0.1);
+                    model.scale.set(0.01, 0.01, 0.01);
 
                     scene.add(model);
                     modelLoaded = true;
