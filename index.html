@@ -6,17 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link type="text/css" rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/examples/js/loaders/GLTFLoader.js" crossorigin="anonymous"></script>
   </head>
 
   <body>
     <script type="module">
       import { ARButton } from "https://unpkg.com/three@0.126.0/examples/jsm/webxr/ARButton.js";
+      import { GLTFLoader } from "https://unpkg.com/three@0.126.0/examples/jsm/loaders/GLTFLoader.js";
 
       let container;
       let camera, scene, renderer;
       let reticle;
       let controller;
-      let squareAdded = false; // флаг для отслеживания добавления квадрата
+      let modelLoaded = false; // флаг для отслеживания добавления модели
+      let gltfLoader = new GLTFLoader(); // инициализируем загрузчик
 
       init();
       animate();
@@ -72,18 +75,17 @@
       }
 
       function onSelect() {
-        if (reticle.visible && !squareAdded) { // добавляем квадрат только если его еще нет
-          const geometry = new THREE.BoxBufferGeometry(0.1, 0.1, 0.1);
-          const material = new THREE.MeshPhongMaterial({
-            color: 0xffffff * Math.random()
+        if (reticle.visible && !modelLoaded) { // загружаем модель только если ее еще нет
+          gltfLoader.load('path/to/your/model.gltf', function (gltf) { // замените 'path/to/your/model.gltf' на путь к вашей модели
+            const model = gltf.scene;
+
+            // задаем позицию модели на основе положения ретикулы
+            model.position.setFromMatrixPosition(reticle.matrix);
+            model.quaternion.setFromRotationMatrix(reticle.matrix);
+
+            scene.add(model);
+            modelLoaded = true; // устанавливаем флаг в true после добавления модели
           });
-          const mesh = new THREE.Mesh(geometry, material);
-
-          mesh.position.setFromMatrixPosition(reticle.matrix);
-          mesh.quaternion.setFromRotationMatrix(reticle.matrix);
-
-          scene.add(mesh);
-          squareAdded = true; // устанавливаем флаг в true после добавления квадрата
         }
       }
 
