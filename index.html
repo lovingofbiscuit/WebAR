@@ -116,8 +116,9 @@
                 isScaling = false;
                 isRotating = false;
 
+                // Устанавливаем флаг для проверки долгого нажатия
                 setTimeout(() => {
-                    if (Date.now() - touchStartTime >= longPressDuration && !isRotating) {
+                    if (!isRotating && (Date.now() - touchStartTime >= longPressDuration)) {
                         isScaling = true;
                         scaleInterval = setInterval(scaleModel, 100); // начинаем постепенное масштабирование
                     }
@@ -133,9 +134,7 @@
                 isRotating = true;
                 isScaling = false; // отменяем масштабирование при движении
                 clearInterval(scaleInterval); // останавливаем интервал масштабирования
-            }
 
-            if (isRotating) {
                 model.rotation.y += deltaX * 0.01; // регулировать скорость поворота
                 lastTouchX = event.touches[0].pageX;
                 lastTouchY = event.touches[0].pageY;
