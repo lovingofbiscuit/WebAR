@@ -27,8 +27,10 @@
         let isRotating = false;
         let isScaling = false;
         let lastTouchX = 0;
+        let lastTouchY = 0;
         let touchStartTime = 0;
         const longPressDuration = 500; // время для долгого нажатия в миллисекундах
+        const moveThreshold = 5; // порог движения для определения перемещения пальца
         let scaleDirection = 1; // направление масштабирования: 1 - увеличение, -1 - уменьшение
 
         init();
@@ -109,8 +111,12 @@
             if (modelLoaded) {
                 touchStartTime = Date.now();
                 lastTouchX = event.touches[0].pageX;
+                lastTouchY = event.touches[0].pageY;
+                isScaling = false;
+                isRotating = false;
+
                 setTimeout(() => {
-                    if (Date.now() - touchStartTime >= longPressDuration) {
+                    if (Date.now() - touchStartTime >= longPressDuration && !isRotating) {
                         isScaling = true;
                     }
                 }, longPressDuration);
@@ -118,26 +124,32 @@
         }
 
         function onTouchMove(event) {
-            if (isScaling && modelLoaded) {
-                scaleModel();
-            } else if (modelLoaded) {
+            const deltaX = event.touches[0].pageX - lastTouchX;
+            const deltaY = event.touches[0].pageY - lastTouchY;
+
+            if (Math.abs(deltaX) > moveThreshold || Math.abs(deltaY) > moveThreshold) {
                 isRotating = true;
-                const deltaX = event.touches[0].pageX - lastTouchX;
+                isScaling = false; // отменяем масштабирование при движении
+            }
+
+            if (isRotating) {
                 model.rotation.y += deltaX * 0.01; // регулировать скорость поворота
                 lastTouchX = event.touches[0].pageX;
+                lastTouchY = event.touches[0].pageY;
             }
         }
 
         function onTouchEnd(event) {
-            isRotating = false;
             if (isScaling) {
-                isScaling = false;
+                scaleModel();
                 scaleDirection = -scaleDirection; // меняем направление масштабирования
+                isScaling = false;
             }
+            isRotating = false;
         }
 
         function scaleModel() {
-            const scaleStep = 0.001;
+            const scaleStep = 0.01; // размер шага
 
             if (scaleDirection === 1) {
                 model.scale.set(
