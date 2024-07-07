@@ -20,7 +20,6 @@
         let gltfLoader = new THREE.GLTFLoader(); // инициализируем загрузчик
         let model; // добавляем переменную для хранения модели
         let isModelLarge = false; // флаг для отслеживания размера модели
-        let isButtonPressed = false; // флаг для отслеживания состояния нажатия кнопки
         const minScale = 0.005; // минимальный размер модели
         const maxScale = 0.05; // максимальный размер модели
 
@@ -30,6 +29,7 @@
         let lastTouchX = 0;
         let touchStartTime = 0;
         const longPressDuration = 500; // время для долгого нажатия в миллисекундах
+        let scaleDirection = 1; // направление масштабирования: 1 - увеличение, -1 - уменьшение
 
         init();
         animate();
@@ -54,8 +54,6 @@
 
             controller = renderer.xr.getController(0);
             controller.addEventListener('select', onSelect);
-            controller.addEventListener('selectstart', onSelectStart);
-            controller.addEventListener('selectend', onSelectEnd);
             scene.add(controller);
 
             addReticleToScene();
@@ -106,40 +104,6 @@
             }
         }
 
-        function onSelectStart() {
-            isButtonPressed = true;
-            if (modelLoaded) {
-                scaleModel();
-            }
-        }
-
-        function onSelectEnd() {
-            isButtonPressed = false;
-            isModelLarge = !isModelLarge; // переключаем флаг размера модели
-        }
-
-        function scaleModel() {
-            if (!isButtonPressed) return;
-
-            const scaleStep = 0.0005;
-
-            if (!isModelLarge) {
-                model.scale.set(
-                    Math.min(model.scale.x + scaleStep, maxScale),
-                    Math.min(model.scale.y + scaleStep, maxScale),
-                    Math.min(model.scale.z + scaleStep, maxScale)
-                );
-            } else {
-                model.scale.set(
-                    Math.max(model.scale.x - scaleStep, minScale),
-                    Math.max(model.scale.y - scaleStep, minScale),
-                    Math.max(model.scale.z - scaleStep, minScale)
-                );
-            }
-
-            requestAnimationFrame(scaleModel);
-        }
-
         // Обработчики событий для поворота и масштабирования
         function onTouchStart(event) {
             if (modelLoaded) {
@@ -154,7 +118,9 @@
         }
 
         function onTouchMove(event) {
-            if (!isScaling && modelLoaded) {
+            if (isScaling && modelLoaded) {
+                scaleModel();
+            } else if (modelLoaded) {
                 isRotating = true;
                 const deltaX = event.touches[0].pageX - lastTouchX;
                 model.rotation.y += deltaX * 0.01; // регулировать скорость поворота
@@ -164,7 +130,28 @@
 
         function onTouchEnd(event) {
             isRotating = false;
-            isScaling = false;
+            if (isScaling) {
+                isScaling = false;
+                scaleDirection = -scaleDirection; // меняем направление масштабирования
+            }
+        }
+
+        function scaleModel() {
+            const scaleStep = 0.001;
+
+            if (scaleDirection === 1) {
+                model.scale.set(
+                    Math.min(model.scale.x + scaleStep, maxScale),
+                    Math.min(model.scale.y + scaleStep, maxScale),
+                    Math.min(model.scale.z + scaleStep, maxScale)
+                );
+            } else {
+                model.scale.set(
+                    Math.max(model.scale.x - scaleStep, minScale),
+                    Math.max(model.scale.y - scaleStep, minScale),
+                    Math.max(model.scale.z - scaleStep, minScale)
+                );
+            }
         }
 
         function onWindowResize() {
