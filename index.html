@@ -93,18 +93,34 @@
 
         function onSelectStart() {
             isButtonPressed = true;
+            if (modelLoaded) {
+                scaleModel();
+            }
         }
 
         function onSelectEnd() {
             isButtonPressed = false;
-            if (modelLoaded) {
-                if (isModelLarge) {
-                    model.scale.set(0.01, 0.01, 0.01); // уменьшаем модель
-                } else {
-                    model.scale.set(0.02, 0.02, 0.02); // увеличиваем модель
-                }
-                isModelLarge = !isModelLarge; // переключаем флаг размера модели
+            isModelLarge = !isModelLarge; // переключаем флаг размера модели
+        }
+
+        function scaleModel() {
+            if (!isButtonPressed) return;
+
+            if (isModelLarge) {
+                model.scale.set(
+                    model.scale.x - 0.0005,
+                    model.scale.y - 0.0005,
+                    model.scale.z - 0.0005
+                );
+            } else {
+                model.scale.set(
+                    model.scale.x + 0.0005,
+                    model.scale.y + 0.0005,
+                    model.scale.z + 0.0005
+                );
             }
+
+            requestAnimationFrame(scaleModel);
         }
 
         function onWindowResize() {
