@@ -54,19 +54,6 @@
 
             window.addEventListener('resize', onWindowResize, false);
         }
-        let degrees = 0; // the angle to rotate our model
-    
-        function rotateModel() {
-        if (model !== undefined) {
-        // valid degrees range from 0-360
-        // Once over 360 three.js will treat 360 as 0, 361 as 1, 362 as 2 and so on
-        degrees = degrees + 0.2; 
-        model.rotation.y = THREE.Math.degToRad(degrees); // we convert degrees to a radian value
-        
-        // more math utility functions can be found here:
-        // https://threejs.org/docs/#api/en/math/MathUtils
-      }
-    }
 
         function addReticleToScene() {
             const geometry = new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2);
@@ -106,13 +93,7 @@
         }
 
         function animate() {
-             requestAnimationFrame(animate);
-
-            // Вращаем модель
-            rotateModel();
-
-            // Рендерим сцену
-            renderer.render(scene, camera);
+            renderer.setAnimationLoop(render);
         }
 
         let hitTestSource = null;
