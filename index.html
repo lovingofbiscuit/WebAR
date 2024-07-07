@@ -24,9 +24,12 @@
         const minScale = 0.005; // минимальный размер модели
         const maxScale = 0.05; // максимальный размер модели
 
-        // Переменные для поворота модели
+        // Переменные для поворота и масштабирования модели
         let isRotating = false;
+        let isScaling = false;
         let lastTouchX = 0;
+        let touchStartTime = 0;
+        const longPressDuration = 500; // время для долгого нажатия в миллисекундах
 
         init();
         animate();
@@ -65,7 +68,7 @@
 
             window.addEventListener('resize', onWindowResize, false);
 
-            // Добавляем обработчики событий для поворота
+            // Добавляем обработчики событий для поворота и масштабирования
             window.addEventListener('touchstart', onTouchStart, false);
             window.addEventListener('touchmove', onTouchMove, false);
             window.addEventListener('touchend', onTouchEnd, false);
@@ -137,16 +140,22 @@
             requestAnimationFrame(scaleModel);
         }
 
-        // Обработчики событий для поворота
+        // Обработчики событий для поворота и масштабирования
         function onTouchStart(event) {
             if (modelLoaded) {
-                isRotating = true;
+                touchStartTime = Date.now();
                 lastTouchX = event.touches[0].pageX;
+                setTimeout(() => {
+                    if (Date.now() - touchStartTime >= longPressDuration) {
+                        isScaling = true;
+                    }
+                }, longPressDuration);
             }
         }
 
         function onTouchMove(event) {
-            if (isRotating) {
+            if (!isScaling && modelLoaded) {
+                isRotating = true;
                 const deltaX = event.touches[0].pageX - lastTouchX;
                 model.rotation.y += deltaX * 0.01; // регулировать скорость поворота
                 lastTouchX = event.touches[0].pageX;
@@ -155,6 +164,7 @@
 
         function onTouchEnd(event) {
             isRotating = false;
+            isScaling = false;
         }
 
         function onWindowResize() {
