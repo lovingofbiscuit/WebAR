@@ -32,6 +32,7 @@
         const longPressDuration = 500; // время для долгого нажатия в миллисекундах
         const moveThreshold = 5; // порог движения для определения перемещения пальца
         let scaleDirection = 1; // направление масштабирования: 1 - увеличение, -1 - уменьшение
+        let scaleInterval; // интервал для постепенного масштабирования
 
         init();
         animate();
@@ -118,6 +119,7 @@
                 setTimeout(() => {
                     if (Date.now() - touchStartTime >= longPressDuration && !isRotating) {
                         isScaling = true;
+                        scaleInterval = setInterval(scaleModel, 100); // начинаем постепенное масштабирование
                     }
                 }, longPressDuration);
             }
@@ -130,6 +132,7 @@
             if (Math.abs(deltaX) > moveThreshold || Math.abs(deltaY) > moveThreshold) {
                 isRotating = true;
                 isScaling = false; // отменяем масштабирование при движении
+                clearInterval(scaleInterval); // останавливаем интервал масштабирования
             }
 
             if (isRotating) {
@@ -140,8 +143,8 @@
         }
 
         function onTouchEnd(event) {
+            clearInterval(scaleInterval); // останавливаем интервал масштабирования
             if (isScaling) {
-                scaleModel();
                 scaleDirection = -scaleDirection; // меняем направление масштабирования
                 isScaling = false;
             }
@@ -149,7 +152,7 @@
         }
 
         function scaleModel() {
-            const scaleStep = 0.01; // размер шага
+            const scaleStep = 0.001; //размер шага
 
             if (scaleDirection === 1) {
                 model.scale.set(
