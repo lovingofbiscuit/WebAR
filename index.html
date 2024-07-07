@@ -21,6 +21,8 @@
         let model; // добавляем переменную для хранения модели
         let isModelLarge = false; // флаг для отслеживания размера модели
         let isButtonPressed = false; // флаг для отслеживания состояния нажатия кнопки
+        const minScale = 0.005; // минимальный размер модели
+        const maxScale = 0.05; // максимальный размер модели
 
         init();
         animate();
@@ -78,10 +80,11 @@
                     // задаем позицию модели на основе положения ретикулы
                     model.position.setFromMatrixPosition(reticle.matrix);
                     model.quaternion.setFromRotationMatrix(reticle.matrix);
-                    model.scale.set(0.01, 0.01, 0.01);
+                    model.scale.set(minScale, minScale, minScale);
 
                     scene.add(model);
                     modelLoaded = true;
+                    isModelLarge = false; // модель добавляется в маленьком размере
                     scene.remove(reticle);
                     reticle.geometry.dispose();
                     reticle.material.dispose();
@@ -106,17 +109,19 @@
         function scaleModel() {
             if (!isButtonPressed) return;
 
-            if (isModelLarge) {
+            const scaleStep = 0.0005;
+
+            if (!isModelLarge) {
                 model.scale.set(
-                    model.scale.x - 0.0005,
-                    model.scale.y - 0.0005,
-                    model.scale.z - 0.0005
+                    Math.min(model.scale.x + scaleStep, maxScale),
+                    Math.min(model.scale.y + scaleStep, maxScale),
+                    Math.min(model.scale.z + scaleStep, maxScale)
                 );
             } else {
                 model.scale.set(
-                    model.scale.x + 0.0005,
-                    model.scale.y + 0.0005,
-                    model.scale.z + 0.0005
+                    Math.max(model.scale.x - scaleStep, minScale),
+                    Math.max(model.scale.y - scaleStep, minScale),
+                    Math.max(model.scale.z - scaleStep, minScale)
                 );
             }
 
