@@ -24,6 +24,10 @@
         const minScale = 0.005; // минимальный размер модели
         const maxScale = 0.05; // максимальный размер модели
 
+        // Переменные для поворота модели
+        let isRotating = false;
+        let lastTouchX = 0;
+
         init();
         animate();
 
@@ -60,6 +64,11 @@
             renderer.domElement.style.display = "none";
 
             window.addEventListener('resize', onWindowResize, false);
+
+            // Добавляем обработчики событий для поворота
+            window.addEventListener('touchstart', onTouchStart, false);
+            window.addEventListener('touchmove', onTouchMove, false);
+            window.addEventListener('touchend', onTouchEnd, false);
         }
 
         function addReticleToScene() {
@@ -126,6 +135,26 @@
             }
 
             requestAnimationFrame(scaleModel);
+        }
+
+        // Обработчики событий для поворота
+        function onTouchStart(event) {
+            if (modelLoaded) {
+                isRotating = true;
+                lastTouchX = event.touches[0].pageX;
+            }
+        }
+
+        function onTouchMove(event) {
+            if (isRotating) {
+                const deltaX = event.touches[0].pageX - lastTouchX;
+                model.rotation.y += deltaX * 0.01; // регулировать скорость поворота
+                lastTouchX = event.touches[0].pageX;
+            }
+        }
+
+        function onTouchEnd(event) {
+            isRotating = false;
         }
 
         function onWindowResize() {
