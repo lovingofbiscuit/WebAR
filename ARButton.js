@@ -45,7 +45,7 @@ class ARButton {
 			button.style.display = '';
 			button.style.cursor = 'pointer';
 			button.style.left = 'calc(50% - 50px)';
-			button.style.width = '250px';
+			button.style.width = '120px';
 			button.textContent = 'START AR';
 			button.onmouseenter = function () {
 				button.style.opacity = '1.0';
