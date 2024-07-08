@@ -22,11 +22,6 @@
         #content {
             text-align: center;
         }
-        #ARButton {
-            position: relative;
-            display: inline-block;
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
@@ -72,7 +67,7 @@
             container = document.createElement('div');
             document.body.appendChild(container);
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 20);
+            camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.01, 20);
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
