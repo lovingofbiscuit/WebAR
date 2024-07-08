@@ -7,8 +7,8 @@ class ARButton {
 				overlay.style.display = 'none';
 				document.body.appendChild( overlay );
 				var svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
-				svg.setAttribute( 'width', 38 );
-				svg.setAttribute( 'height', 38 );
+				svg.setAttribute( 'width', 60 );
+				svg.setAttribute( 'height', 60 );
 				svg.style.position = 'absolute';
 				svg.style.right = '20px';
 				svg.style.top = '20px';
