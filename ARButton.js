@@ -7,8 +7,8 @@ class ARButton {
 				overlay.style.display = 'none';
 				document.body.appendChild( overlay );
 				var svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
-				svg.setAttribute( 'width', 60 );
-				svg.setAttribute( 'height', 60 );
+				svg.setAttribute( 'width', 38 );
+				svg.setAttribute( 'height', 38 );
 				svg.style.position = 'absolute';
 				svg.style.right = '20px';
 				svg.style.top = '20px';
@@ -45,7 +45,7 @@ class ARButton {
 			button.style.display = '';
 			button.style.cursor = 'pointer';
 			button.style.left = 'calc(50% - 50px)';
-			button.style.width = '100px';
+			button.style.width = '200px';
 			button.textContent = 'START AR';
 			button.onmouseenter = function () {
 				button.style.opacity = '1.0';
