@@ -29,6 +29,7 @@
         let lastTouchX = 0;
         let lastTouchY = 0;
         let touchStartTime = 0;
+        let longPressTimeout; // таймаут для долгого нажатия
         const longPressDuration = 1500; // время для долгого нажатия в миллисекундах
         const moveThreshold = 5; // порог движения для определения перемещения пальца
         let scaleDirection = 1; // направление масштабирования: 1 - увеличение, -1 - уменьшение
@@ -116,9 +117,8 @@
                 isScaling = false;
                 isRotating = false;
 
-                // Устанавливаем флаг для проверки долгого нажатия
-                setTimeout(() => {
-                    if (!isRotating && (Date.now() - touchStartTime >= longPressDuration)) {
+                longPressTimeout = setTimeout(() => {
+                    if (!isRotating) {
                         isScaling = true;
                         scaleInterval = setInterval(scaleModel, 100); // начинаем постепенное масштабирование
                     }
@@ -134,6 +134,7 @@
                 isRotating = true;
                 isScaling = false; // отменяем масштабирование при движении
                 clearInterval(scaleInterval); // останавливаем интервал масштабирования
+                clearTimeout(longPressTimeout); // отменяем таймаут для долгого нажатия
 
                 model.rotation.y += deltaX * 0.01; // регулировать скорость поворота
                 lastTouchX = event.touches[0].pageX;
@@ -143,6 +144,7 @@
 
         function onTouchEnd(event) {
             clearInterval(scaleInterval); // останавливаем интервал масштабирования
+            clearTimeout(longPressTimeout); // отменяем таймаут для долгого нажатия
             if (isScaling) {
                 scaleDirection = -scaleDirection; // меняем направление масштабирования
                 isScaling = false;
