@@ -7,56 +7,8 @@
     <link type="text/css" rel="stylesheet" href="style.css">
     <script src="three.js" crossorigin="anonymous"></script>
     <script src="GLTFLoader.js"></script>
-    <style>
-        /* Основные стили страницы */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-
-        /* Стили контейнера */
-        .container {
-            text-align: center;
-        }
-
-        /* Стили для кнопки */
-        .start-button {
-            background-color: #007bff;
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .start-button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-
-        .start-button:active {
-            background-color: #004494;
-            transform: translateY(2px);
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <button class="start-button" id="startButton">Start AR Experience</button>
-    </div>
     <script type="module">
         import { ARButton } from './ARButton.js';
 
